@@ -392,15 +392,17 @@ public class CatalystInstanceImpl implements CatalystInstance {
                                           public void run() {
                                             // Kill non-UI threads from neutral third party
                                             // potentially expensive, so don't run on UI thread
+                                            
+                                            // fixed libfbjni.so crash when Instance is destroyed
+                                            getReactQueueConfiguration().destroy();
 
                                             // contextHolder is used as a lock to guard against
                                             // other users of the JS VM having the VM destroyed
                                             // underneath them, so notify them before we reset
-                                            // Native
+                                            // Native                                            
                                             mJavaScriptContextHolder.clear();
-
                                             mHybridData.resetNative();
-                                            getReactQueueConfiguration().destroy();
+                                            
                                             FLog.d(
                                                 ReactConstants.TAG,
                                                 "CatalystInstanceImpl.destroy() end");
